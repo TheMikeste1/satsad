@@ -4,10 +4,43 @@ version = "0.1.0"
 description = "Add your description here"
 readme = "README.md"
 requires-python = ">=3.14"
-dependencies = []
+dependencies = ["synth-gen", "numpy>=2.4.0", "plotly>=6.5.0"]
+
+[project.optional-dependencies]
+cpu = ["torch>=2.9.1", "torchvision>=0.24.1"]
+cu128 = ["torch>=2.9.1", "torchvision>=0.24.1"]
+
+[tool.uv]
+conflicts = [[{ extra = "cpu" }, { extra = "cu128" }]]
 
 [tool.uv.sources]
-# bird-feeder = { workspace = true }
+synth-gen = { workspace = true }
+torch = [
+  { index = "pytorch-cpu", extra = "cpu" },
+  { index = "pytorch-cu128", extra = "cu128" },
+]
+torchvision = [
+  { index = "pytorch-cpu", extra = "cpu" },
+  { index = "pytorch-cu128", extra = "cu128" },
+]
 
 [tool.uv.workspace]
 members = ["packages/*"]
+
+[[tool.uv.index]]
+name = "pytorch-cpu"
+url = "https://download.pytorch.org/whl/cpu"
+explicit = true
+
+[[tool.uv.index]]
+name = "pytorch-cu128"
+url = "https://download.pytorch.org/whl/cu128"
+explicit = true
+
+[dependency-groups]
+dev = [
+  "debugpy>=1.8.19",
+  "pydoclint>=0.8.3",
+  "pylint>=4.0.4",
+  "pyright>=1.1.407",
+]
