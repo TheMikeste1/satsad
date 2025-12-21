@@ -569,6 +569,12 @@ wheels = [
 name = "synth-gen"
 version = "0.1.0"
 source = { editable = "packages/synth-gen" }
+dependencies = [
+    { name = "numpy" },
+]
+
+[package.metadata]
+requires-dist = [{ name = "numpy" }]
 
 [[package]]
 name = "tomlkit"
