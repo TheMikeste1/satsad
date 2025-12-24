@@ -27,7 +27,7 @@ class Sample:
     observation_anomalies: tuple[str, ...]
 
 
-def generate_regimes(
+def generate_dataset(
     regimes: Sequence[Regime],
     system_anomalies: Sequence[SystemAnomaly],
     observation_anomalies: Sequence[ObservationAnomaly],
