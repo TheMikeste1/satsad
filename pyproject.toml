@@ -9,6 +9,7 @@ dependencies = [
     "numpy>=2.4.0",
     "plotly>=6.5.0",
     "pandas>=2.3.3",
+    "tqdm>=4.67.1",
 ]
 
 [project.optional-dependencies]

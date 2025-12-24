@@ -3,9 +3,12 @@ from dataclasses import dataclass
 from typing import Optional
 
 import numpy as np
+from tqdm import tqdm
+
+from synth_gen import regime
 
 from .anomaly import ObservationAnomaly, SystemAnomaly
-from .regime import Regime, RegimeController
+from .sample import Sample
 
 
 @dataclass(frozen=True)
@@ -18,19 +21,10 @@ class Mode:
         return self.amplitude * np.sin(2 * np.pi / self.period * t + self.phase, dtype=np.float64)
 
 
-@dataclass(frozen=True)
-class Sample:
-    clean: np.float64
-    observed: np.float64
-    regime: int
-    system_anomalies: tuple[str, ...]
-    observation_anomalies: tuple[str, ...]
-
-
 def generate_dataset(
-    regimes: Sequence[Regime],
-    system_anomalies: Sequence[SystemAnomaly],
-    observation_anomalies: Sequence[ObservationAnomaly],
+    regimes: Sequence[regime.Regime],
+    global_system_anomalies: Sequence[SystemAnomaly],
+    global_observation_anomalies: Sequence[ObservationAnomaly],
     t_start: int,
     count: int,
     *,
@@ -39,7 +33,11 @@ def generate_dataset(
     if rng is None:
         rng = np.random.default_rng()
 
-    controller = RegimeController(regimes, system_anomalies, observation_anomalies)
+    controller = regime.Controller(regimes, global_system_anomalies, global_observation_anomalies)
     controller.start(rng)
-    samples = [controller.step(t_start + i, rng) for i in range(count)]
+    samples = []
+    for i in tqdm(range(count)):
+        sample = controller.step(t_start + i, rng)
+        samples.append(sample)
+
     return samples

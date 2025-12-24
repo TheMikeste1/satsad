@@ -1,13 +1,16 @@
 from collections.abc import Iterator, Sequence
 from itertools import chain
-from typing import Protocol
+from typing import TYPE_CHECKING, Protocol
 
 import numpy as np
 
-from synth_gen import Mode, Sample
-from synth_gen.anomaly import Anomaly, ObservationAnomaly, SystemAnomaly
-from synth_gen.modifier import Modifier
-from synth_gen.noise import Noise
+from .sample import Sample
+
+if TYPE_CHECKING:
+    from synth_gen import Mode
+    from synth_gen.anomaly import Anomaly, ObservationAnomaly, SystemAnomaly
+    from synth_gen.modifier import Modifier
+    from synth_gen.noise import Noise
 
 
 class DurationDeteminant(Protocol):
@@ -67,7 +70,7 @@ class Regime:
         return self._min_time_remaining <= 0 and rng.random() < self.transition_probability
 
 
-class RegimeController:
+class Controller:
     def __init__(self, regimes: Sequence[Regime], system_anomalies: Sequence[SystemAnomaly], observation_anomalies: Sequence[ObservationAnomaly]):
         if len(regimes) == 0:
             raise ValueError("There must be at least one regime")
